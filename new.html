@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeLoop - Connect. Create. Evolve.</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.0.0/d3.min.js"></script>
+    <style>
+        
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Orbitron:wght@400;700&display=swap');
+
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --accent-color: #e74c3c;
+    --background-color: #0f172a;
+    --text-color: #e2e8f0;
+    --neon-color: #39ff14;
+    --glow-color: #f39c12;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    overflow-x: hidden;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Neo-Brutalist Style */
+.neo-brutalist {
+    border: 3px solid var(--text-color);
+    box-shadow: 8px 8px 0 var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.neo-brutalist:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 12px 12px 0 var(--text-color);
+}
+
+/* Glitch Effect */
+.glitch {
+    position: relative;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--primary-color);
+    animation: glitch-flicker 2s infinite;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+}
+
+.glitch::before {
+    left: 2px;
+    text-shadow: -2px 0 var(--secondary-color);
+    clip: rect(24px, 550px, 90px, 0);
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+    left: -2px;
+    text-shadow: -2px 0 var(--accent-color), 2px 2px var(--primary-color);
+    animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+    0% { clip: rect(57px, 9999px, 34px, 0); }
+    5% { clip: rect(89px, 9999px, 76px, 0); }
+    10% { clip: rect(17px, 9999px, 8px, 0); }
+    15% { clip: rect(37px, 9999px, 32px, 0); }
+    20% { clip: rect(85px, 9999px, 93px, 0); }
+    25% { clip: rect(74px, 9999px, 54px, 0); }
+    30% { clip: rect(89px, 9999px, 55px, 0); }
+    35% { clip: rect(5px, 9999px, 35px, 0); }
+    40% { clip: rect(58px, 9999px, 84px, 0); }
+    45% { clip: rect(10px, 9999px, 56px, 0); }
+    50% { clip: rect(93px, 9999px, 59px, 0); }
+    55% { clip: rect(30px, 9999px, 81px, 0); }
+    60% { clip: rect(76px, 9999px, 4px, 0); }
+    65% { clip: rect(19px, 9999px, 35px, 0); }
+    70% { clip: rect(48px, 9999px, 57px, 0); }
+    75% { clip: rect(13px, 9999px, 75px, 0); }
+    80% { clip: rect(26px, 9999px, 93px, 0); }
+    85% { clip: rect(57px, 9999px, 36px, 0); }
+    90% { clip: rect(39px, 9999px, 44px, 0); }
+    95% { clip: rect(80px, 9999px, 3px, 0); }
+    100% { clip: rect(92px, 9999px, 62px, 0); }
+}
+
+@keyframes glitch-anim-2 {
+    0% { clip: rect(65px, 9999px, 94px, 0); }
+    5% { clip: rect(67px, 9999px, 23px, 0); }
+    10% { clip: rect(73px, 9999px, 42px, 0); }
+    15% { clip: rect(7px, 9999px, 92px, 0); }
+    20% { clip: rect(89px, 9999px, 61px, 0); }
+    25% { clip: rect(34px, 9999px, 15px, 0); }
+    30% { clip: rect(86px, 9999px, 88px, 0); }
+    35% { clip: rect(69px, 9999px, 27px, 0); }
+    40% { clip: rect(95px, 9999px, 50px, 0); }
+    45% { clip: rect(5px, 9999px, 84px, 0); }
+    50% { clip: rect(40px, 9999px, 31px, 0); }
+    55% { clip: rect(43px, 9999px, 74px, 0); }
+    60% { clip: rect(6px, 9999px, 83px, 0); }
+    65% { clip: rect(75px, 9999px, 81px, 0); }
+    70% { clip: rect(66px, 9999px, 53px, 0); }
+    75% { clip: rect(62px, 9999px, 15px, 0); }
+    80% { clip: rect(12px, 9999px, 57px, 0); }
+    85% { clip: rect(56px, 9999px, 94px, 0); }
+    90% { clip: rect(41px, 9999px, 87px, 0); }
+    95% { clip: rect(70px, 9999px, 65px, 0); }
+    100% { clip: rect(90px, 9999px, 80px, 0); }
+}
+
+@keyframes glitch-flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+    }
+    20%, 24%, 55% {
+        opacity: 0;
+    }
+}
+
+/* Loader Animation */
+.loader {
+    border-top-color: var(--primary-color);
+    -webkit-animation: spinner 1.5s linear infinite;
+    animation: spinner 1.5s linear infinite;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 5px solid rgba(0, 0, 0, 0.1);
+}
+
+@-webkit-keyframes spinner {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spinner {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Gradient Text Effect */
+.gradient-text {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 300% 300%;
+    animation: gradient-shift 5s ease infinite;
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Navigation Link Animation */
+.nav-link {
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--secondary-color);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover::after {
+    transform: translateX(0%);
+}
+
+/* Pulsating Effect for Buttons */
+.pulse-button {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.pulse-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: var(--accent-color);
+    opacity: 0.6;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.pulse-button:hover::after {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+}
+
+/* Parallax Scrolling Effect */
+.parallax-section {
+    position: relative;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
+
+.parallax-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.parallax-layer-1 {
+    background-image: url('layer1.jpg');
+    z-index: 1;
+}
+
+.parallax-layer-2 {
+    background-image: url('layer2.jpg');
+    z-index: 2;
+    transform: translateZ(-2px) scale(3);
+}
+
+/* Button Hover Effect */
+.btn-hover {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    transition: color 0.4s;
+}
+
+.btn-hover::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) scaleY(1);
+    width: 100%;
+    height: 100%;
+    background-color: var(--accent-color);
+    transition: transform 0.4s, width 0.4s;
+    transform-origin: 50% 0%;
+}
+
+.btn-hover:hover::before {
+    transform: translateX(-50%) scaleY(0);
+    width: 110%;
+}
+
+.btn-hover:hover {
+    color: var(--text-color);
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+    cursor: pointer;
+    border: 1px solid var(--text-color);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.dark-mode-toggle:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
+}
+
+/* Neon Glow Effect */
+.neon {
+    font-family: 'Orbitron', sans-serif;
+    text-shadow: 0 0 5px var(--neon-color), 0 0 10px var(--neon-color), 0 0 15px var(--neon-color), 0 0 20px var(--neon-color);
+    color: var(--neon-color);
+    animation: neon-flicker 1.5s infinite alternate;
+}
+
+@keyframes neon-flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+        text-shadow: 0 0 5px var(--neon-color), 0 0 10px var(--neon-color), 0 0 15px var(--neon-color), 0 0 20px var(--neon-color);
+    }
+    20%, 24%, 55% {
+        opacity: 0.8;
+        text-shadow: 0 0 2px var(--neon-color), 0 0 5px var(--neon-color), 0 0 7px var(--neon-color), 0 0 10px var(--neon-color);
+    }
+}
+
+/* 3D Text Effect */
+.three-d-text {
+    position: relative;
+    color: var(--primary-color);
+    font-size: 4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    perspective: 1000px;
+}
+
+.three-d-text::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--accent-color);
+    transform: translateZ(-20px);
+    opacity: 0.7;
+}
+
+.three-d-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--secondary-color);
+    transform: translateZ(-40px);
+    opacity: 0.5;
+}
+
+        
+    </style>
+</head>
+<body>
+    <div id="app">
+        <nav class="bg-gray-900 fixed w-full z-10">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                <h1 id="lifeloop" class="text-3xl font-bold text-white">LifeLoop</h1>
+                <div class="hidden md:flex space-x-4">
+                    <a v-for="link in navLinks" :href="link.href" class="text-white hover:text-green-400 transition-colors">{{ link.text }}</a>
+                </div>
+                <button @click="toggleMobileMenu" class="md:hidden text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <div v-if="mobileMenuOpen" class="md:hidden bg-gray-800">
+                <a v-for="link in navLinks" :href="link.href" class="block py-2 px-4 text-white hover:bg-gray-700">{{ link.text }}</a>
+            </div>
+        </nav>
+
+        <main class="container mx-auto px-4 pt-24">
+            <section id="home" class="section min-h-screen flex flex-col justify-center items-center">
+                <h2 class="text-6xl font-bold mb-8 glitch" data-text="Connect. Create. Evolve.">Connect. Create. Evolve.</h2>
+                <p class="text-xl mb-8 text-center">Experience the future of social networking with LifeLoop. Seamlessly blend your real-world activities with digital interactions.</p>
+                <button @click="showJoinModal = true" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-colors">
+                    Join LifeLoop
+                </button>
+            </section>
+
+            <section id="feed" class="section my-24">
+                <h3 class="text-4xl font-bold mb-12">Activity Feed</h3>
+                <div id="post-form" class="mb-8 neo-brutalist bg-gray-800 p-6">
+                    <textarea v-model="newPost.content" class="w-full p-2 mb-4 bg-gray-700 text-white rounded" placeholder="What's on your mind?"></textarea>
+                    <div class="flex space-x-4 mb-4">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="file" @change="handleFileUpload($event, 'photo')" accept="image/*" class="hidden">
+                            <i class="fas fa-camera text-green-400"></i>
+                            <span>Add Photo</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="file" @change="handleFileUpload($event, 'video')" accept="video/*" class="hidden">
+                            <i class="fas fa-video text-green-400"></i>
+                            <span>Add Video</span>
+                        </label>
+                    </div>
+                    <button @click="submitPost" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors">Post</button>
+                </div>
+                <div id="posts-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div v-for="post in posts" :key="post.id" class="neo-brutalist bg-gray-800 p-6">
+                        <div class="flex items-center mb-4">
+                            <img :src="post.author.avatar" alt="Author" class="w-10 h-10 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold">{{ post.author.name }}</h4>
+                                <p class="text-sm text-gray-400">{{ post.timestamp }}</p>
+                            </div>
+                        </div>
+                        <p class="mb-4">{{ post.content }}</p>
+                        <img v-if="post.photo" :src="post.photo" alt="Post image" class="w-full h-48 object-cover mb-4 rounded">
+                        <video v-if="post.video" controls class="w-full h-48 object-cover mb-4 rounded">
+                            <source :src="post.video" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="flex justify-between">
+                            <button class="text-green-400 hover:text-green-500"><i class="far fa-thumbs-up mr-2"></i>{{ post.likes }}</button>
+                            <button class="text-blue-400 hover:text-blue-500"><i class="far fa-comment mr-2"></i>{{ post.comments }}</button>
+                            <button class="text-purple-400 hover:text-purple-500"><i class="far fa-share-square mr-2"></i>Share</button>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="loading" class="flex justify-center items-center">
+                    <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+                </div>
+                <div v-if="!loading && hasMore" class="text-center mt-8">
+                    <button @click="loadMorePosts" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors">
+                        Load More
+                    </button>
+                </div>
+            </section>
+
+            <!-- AR Space Section -->
+            <section id="ar-space" class="section my-24">
+                <h3 class="text-4xl font-bold mb-12">AR Collaboration Space</h3>
+                <div id="ar-container" class="neo-brutalist bg-gray-800 p-6 h-96 relative">
+                    <canvas id="ar-canvas" class="w-full h-full"></canvas>
+                    <div class="absolute bottom-4 left-4 space-x-4">
+                        <button @click="toggleAR" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded transition-colors">
+                            {{ arActive ? 'Exit AR' : 'Enter AR' }}
+                        </button>
+                        <button v-if="arActive" @click="addARObject" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors">
+                            Add Object
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section id="skills" class="section my-24">
+                <h3 class="text-4xl font-bold mb-12">Skill Exchange Hub</h3>
+                <div id="skill-web" class="h-96 bg-gray-800 neo-brutalist p-6 relative">
+                    <svg id="skill-graph" class="w-full h-full"></svg>
+                    <div class="absolute top-4 right-4">
+                        <button @click="addSkill" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors">
+                            Add Skill
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reels Section -->
+            <section id="reels" class="section my-24">
+                <h3 class="text-4xl font-bold mb-12">LifeLoop Reels</h3>
+                <div class="reels-container flex space-x-4 overflow-x-auto pb-4">
+                    <div v-for="reel in reels" :key="reel.id" class="flex-shrink-0 w-64">
+                        <div class="neo-brutalist bg-gray-800 p-4 rounded-lg">
+                            <video :src="reel.videoUrl" class="w-full h-80 object-cover rounded mb-4" loop muted @click="playReel"></video>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <img :src="reel.author.avatar" alt="Author" class="w-8 h-8 rounded-full mr-2">
+                                    <span class="font-bold">{{ reel.author.name }}</span>
+                                </div>
+                                <button class="text-red-400 hover:text-red-500"><i class="fas fa-heart"></i> {{ reel.likes }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Marketplace Section -->
+            <section id="marketplace" class="section my-24">
+                <h3 class="text-4xl font-bold mb-12">Digital Marketplace</h3>
+                <div id="marketplace-items" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                    <div v-for="item in marketplaceItems" :key="item.id" class="neo-brutalist bg-gray-800 p-6 rounded-lg">
+                        <img :src="item.image" :alt="item.name" class="w-full h-48 object-cover rounded mb-4">
+                        <h4 class="font-bold text-xl mb-2">{{ item.name }}</h4>
+                        <p class="text-gray-400 mb-4">{{ item.description }}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-green-400">{{ item.price }}</span>
+                            <button @click="addToCart(item)" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tasks Section -->
+            <section id="tasks" class="section my-24">
+                <h3 class="text-4xl font-bold mb-12">Task Management</h3>
+                <div id="task-list" class="space-y-4">
+                    <div v-for="task in tasks" :key="task.id" class="neo-brutalist bg-gray-800 p-6 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" :checked="task.completed" @change="toggleTask(task)" class="mr-4">
+                                <span :class="{ 'line-through': task.completed }">{{ task.title }}</span>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button @click="editTask(task)" class="text-blue-400 hover:text-blue-500"><i class="fas fa-edit"></i></button>
+                                <button @click="deleteTask(task)" class="text-red-400 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button @click="showAddTaskModal = true" class="mt-8 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors">
+                    Add New Task
+                </button>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="section my-24">
+                <h3 class="text-4xl font-bold mb-12">Collaborative Projects</h3>
+                <div id="project-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Projects Section (continued) -->
+                    <div v-for="project in projects" :key="project.id" class="neo-brutalist bg-gray-800 p-6 rounded-lg">
+                        <h4 class="font-bold text-xl mb-2">{{ project.name }}</h4>
+                        <p class="text-gray-400 mb-4">{{ project.description }}</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-sm text-gray-400">{{ project.members.length }} members</span>
+                            <span class="text-sm text-gray-400">Due: {{ project.dueDate }}</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <img v-for="member in project.members.slice(0, 3)" :key="member.id" :src="member.avatar" :alt="member.name" class="w-8 h-8 rounded-full">
+                            <div v-if="project.members.length > 3" class="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-sm">
+                                +{{ project.members.length - 3 }}
+                            </div>
+                        </div>
+                        <button @click="joinProject(project)" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors">
+                            Join Project
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Events Section -->
+            <section id="events" class="section my-24">
+                <h3 class="text-4xl font-bold mb-12">Virtual Events</h3>
+                <div id="event-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div v-for="event in events" :key="event.id" class="neo-brutalist bg-gray-800 p-6 rounded-lg">
+                        <img :src="event.image" :alt="event.name" class="w-full h-48 object-cover rounded mb-4">
+                        <h4 class="font-bold text-xl mb-2">{{ event.name }}</h4>
+                        <p class="text-gray-400 mb-4">{{ event.description }}</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-sm text-gray-400">{{ event.date }}</span>
+                            <span class="text-sm text-gray-400">{{ event.attendees }} attending</span>
+                        </div>
+                        <button @click="attendEvent(event)" class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded transition-colors">
+                            Attend Event
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profile" class="section my-24">
+                <h3 class="text-4xl font-bold mb-12">User Profile</h3>
+                <div id="user-profile" class="neo-brutalist bg-gray-800 p-8 rounded-lg">
+                    <div class="flex items-center mb-8">
+                        <img :src="user.avatar" :alt="user.name" class="w-24 h-24 rounded-full mr-8">
+                        <div>
+                            <h4 class="text-2xl font-bold">{{ user.name }}</h4>
+                            <p class="text-gray-400">{{ user.bio }}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h5 class="text-xl font-bold mb-4">Skills</h5>
+                            <div class="flex flex-wrap gap-2">
+                                <span v-for="skill in user.skills" :key="skill" class="bg-blue-500 text-white px-2 py-1 rounded">{{ skill }}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="text-xl font-bold mb-4">Interests</h5>
+                            <div class="flex flex-wrap gap-2">
+                                <span v-for="interest in user.interests" :key="interest" class="bg-green-500 text-white px-2 py-1 rounded">{{ interest }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <h5 class="text-xl font-bold mb-4">Recent Activity</h5>
+                        <ul class="space-y-4">
+                            <li v-for="activity in user.recentActivity" :key="activity.id" class="flex items-center">
+                                <i :class="activity.icon" class="mr-4 text-2xl"></i>
+                                <div>
+                                    <p>{{ activity.description }}</p>
+                                    <span class="text-sm text-gray-400">{{ activity.timestamp }}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-gray-900 py-8">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-wrap justify-between">
+                    <div class="w-full md:w-1/3 mb-6 md:mb-0">
+                        <h4 class="text-2xl font-bold mb-4">LifeLoop</h4>
+                        <p>Connect. Create. Evolve.</p>
+                    </div>
+                    <div class="w-full md:w-1/3 mb-6 md:mb-0">
+                        <h5 class="text-xl font-bold mb-4">Quick Links</h5>
+                        <ul class="space-y-2">
+                            <li v-for="link in footerLinks" :key="link.href">
+                                <a :href="link.href" class="hover:text-green-400">{{ link.text }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-1/3">
+                        <h5 class="text-xl font-bold mb-4">Contact Us</h5>
+                        <p>Email: info@lifeloop.com</p>
+                        <p>Phone: +1 (123) 456-7890</p>
+                        <div class="flex space-x-4 mt-4">
+                            <a href="#" class="text-white hover:text-green-400"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="text-white hover:text-green-400"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="text-white hover:text-green-400"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="text-white hover:text-green-400"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 text-center">
+                    <p>© 2024 LifeLoop. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Modals -->
+        <div v-if="showJoinModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-gray-800 p-8 rounded-lg max-w-md w-full">
+                <h2 class="text-2xl font-bold mb-4">Join LifeLoop</h2>
+                <form @submit.prevent="submitJoinForm">
+                    <div class="mb-4">
+                        <label for="name" class="block mb-2">Name</label>
+                        <input type="text" id="name" v-model="joinForm.name" required class="w-full p-2 bg-gray-700 rounded">
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block mb-2">Email</label>
+                        <input type="email" id="email" v-model="joinForm.email" required class="w-full p-2 bg-gray-700 rounded">
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="block mb-2">Password</label>
+                        <input type="password" id="password" v-model="joinForm.password" required class="w-full p-2 bg-gray-700 rounded">
+                    </div>
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors">
+                        Create Account
+                    </button>
+                </form>
+                <button @click="showJoinModal = false" class="mt-4 text-gray-400 hover:text-white">Close</button>
+            </div>
+        </div>
+
+        <div v-if="showAddTaskModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-gray-800 p-8 rounded-lg max-w-md w-full">
+                <h2 class="text-2xl font-bold mb-4">Add New Task</h2>
+                <form @submit.prevent="addTask">
+                    <div class="mb-4">
+                        <label for="taskTitle" class="block mb-2">Task Title</label>
+                        <input type="text" id="taskTitle" v-model="newTask.title" required class="w-full p-2 bg-gray-700 rounded">
+                    </div>
+                    <div class="mb-4">
+                        <label for="taskDescription" class="block mb-2">Description</label>
+                        <textarea id="taskDescription" v-model="newTask.description" class="w-full p-2 bg-gray-700 rounded"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="taskDueDate" class="block mb-2">Due Date</label>
+                        <input type="date" id="taskDueDate" v-model="newTask.dueDate" class="w-full p-2 bg-gray-700 rounded">
+                    </div>
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors">
+                        Add Task
+                    </button>
+                </form>
+                <button @click="showAddTaskModal = false" class="mt-4 text-gray-400 hover:text-white">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    mobileMenuOpen: false,
+                    showJoinModal: false,
+                    showAddTaskModal: false,
+                    showEditProfileModal: false,
+                    joinForm: {
+                        name: '',
+                        email: '',
+                        password: '',
+                    },
+                    newPost: {
+                        content: '',
+                        photo: null,
+                        video: null,
+                    },
+                    posts: [],
+                    loading: false,
+                    hasMore: true,
+                    arActive: false,
+                    arScene: null,
+                    reels: [],
+                    marketplaceItems: [],
+                    cart: [],
+                    tasks: [],
+                    newTask: {
+                        title: '',
+                        description: '',
+                        dueDate: '',
+                        priority: 'medium',
+                    },
+                    projects: [],
+                    events: [],
+                    user: {
+                        name: 'SRIDHAR',
+                        avatar: 'image.png',
+                        bio: 'Passionate developer and LifeLoop enthusiast',
+                        skills: ['JavaScript', 'Vue.js', 'Node.js'],
+                        interests: ['Web Development', 'AI', 'Blockchain'],
+                        recentActivity: [
+                            { id: 1, icon: 'fas fa-code', description: 'Completed a new project', timestamp: '2 hours ago' },
+                            { id: 2, icon: 'fas fa-book', description: 'Learned a new skill', timestamp: '1 day ago' },
+                            { id: 3, icon: 'fas fa-users', description: 'Joined a new group', timestamp: '3 days ago' },
+                        ],
+                    },
+                    editProfileForm: {
+                        name: '',
+                        bio: '',
+                        avatar: null,
+                    },
+                    navLinks: [
+                    { href: '#', text: 'Home' },
+                    { href: '#feed', text: 'Feed' },
+                    { href: '#ar-space', text: 'AR Space' },
+                    { href: '#skills', text: 'Skills' },
+                    { href: '#reels', text: 'Reels' },
+                    { href: '#marketplace', text: 'Marketplace' },
+                    { href: '#tasks', text: 'Tasks' },
+                    { href: '#projects', text: 'Projects' },
+                    { href: '#events', text: 'Events' },
+                    { href: '#profile', text: 'Profile' },
+                    ],
+                    footerLinks: [
+                    { href: '#', text: 'Home' },
+                    { href: '#feed', text: 'Feed' },
+                    { href: '#ar-space', text: 'AR Space' },
+                    { href: '#skills', text: 'Skills' },
+                    { href: '#reels', text: 'Reels' },
+                    ],
+                    notifications: [],
+                    skillGraph: null,
+                };
+            },
+            methods: {
+                toggleMobileMenu() {
+                    this.mobileMenuOpen = !this.mobileMenuOpen;
+                },
+                async submitJoinForm() {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        console.log('Join form submitted:', this.joinForm);
+                        this.showJoinModal = false;
+                        this.addNotification('Welcome to LifeLoop!', 'success');
+                    } catch (error) {
+                        this.addNotification('Failed to join. Please try again.', 'error');
+                    }
+                },
+                handleFileUpload(event, type) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        this.newPost[type] = URL.createObjectURL(file);
+                    }
+                },
+                async submitPost() {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        const newPost = {
+                            id: Date.now(),
+                            author: { name: this.user.name, avatar: this.user.avatar },
+                            content: this.newPost.content,
+                            photo: this.newPost.photo,
+                            video: this.newPost.video,
+                            timestamp: 'Just now',
+                            likes: 0,
+                            comments: 0,
+                        };
+                        this.posts.unshift(newPost);
+                        this.newPost = { content: '', photo: null, video: null };
+                        this.addNotification('Post created successfully!', 'success');
+                    } catch (error) {
+                        this.addNotification('Failed to create post. Please try again.', 'error');
+                    }
+                },
+                async loadMorePosts() {
+                    this.loading = true;
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        const newPosts = [
+                            // ... generate more sample posts
+                        ];
+                        this.posts.push(...newPosts);
+                        this.loading = false;
+                        if (this.posts.length >= 50) {
+                            this.hasMore = false;
+                        }
+                    } catch (error) {
+                        this.addNotification('Failed to load more posts. Please try again.', 'error');
+                        this.loading = false;
+                    }
+                },
+                toggleAR() {
+                    this.arActive = !this.arActive;
+                    if (this.arActive) {
+                        this.initializeARScene();
+                    } else {
+                        this.cleanupARScene();
+                    }
+                },
+                initializeARScene() {
+                    // Initialize Three.js scene
+                    const scene = new THREE.Scene();
+                    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                    const renderer = new THREE.WebGLRenderer();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    document.getElementById('ar-canvas').appendChild(renderer.domElement);
+
+                    // Add a cube to the scene
+                    const geometry = new THREE.BoxGeometry();
+                    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+                    const cube = new THREE.Mesh(geometry, material);
+                    scene.add(cube);
+
+                    camera.position.z = 5;
+
+                    // Animation loop
+                    const animate = () => {
+                        requestAnimationFrame(animate);
+                        cube.rotation.x += 0.01;
+                        cube.rotation.y += 0.01;
+                        renderer.render(scene, camera);
+                    };
+                    animate();
+
+                    this.arScene = { scene, camera, renderer, cube };
+                },
+                cleanupARScene() {
+                    if (this.arScene) {
+                        this.arScene.renderer.domElement.remove();
+                        this.arScene = null;
+                    }
+                },
+                addARObject() {
+                    if (this.arScene) {
+                        const geometry = new THREE.SphereGeometry(0.5, 32, 32);
+                        const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                        const sphere = new THREE.Mesh(geometry, material);
+                        sphere.position.set(
+                            Math.random() * 4 - 2,
+                            Math.random() * 4 - 2,
+                            Math.random() * 4 - 2
+                        );
+                        this.arScene.scene.add(sphere);
+                    }
+                },
+                async playReel(reel) {
+                    // Implement reel playback logic
+                    console.log('Playing reel:', reel.id);
+                    // Update reel views
+                    reel.views += 1;
+                    try {
+                        // Simulating API call to update views
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        this.addNotification('Enjoy the reel!', 'info');
+                    } catch (error) {
+                        console.error('Failed to update reel views', error);
+                    }
+                },
+                async addToCart(item) {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        this.cart.push(item);
+                        this.addNotification(`${item.name} added to cart!`, 'success');
+                    } catch (error) {
+                        this.addNotification('Failed to add item to cart. Please try again.', 'error');
+                    }
+                },
+                async toggleTask(task) {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        task.completed = !task.completed;
+                        this.addNotification(`Task ${task.completed ? 'completed' : 'uncompleted'}!`, 'success');
+                    } catch (error) {
+                        this.addNotification('Failed to update task. Please try again.', 'error');
+                    }
+                },
+                editTask(task) {
+                    this.newTask = { ...task };
+                    this.showAddTaskModal = true;
+                },
+                async deleteTask(task) {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        this.tasks = this.tasks.filter(t => t.id !== task.id);
+                        this.addNotification('Task deleted successfully!', 'success');
+                    } catch (error) {
+                        this.addNotification('Failed to delete task. Please try again.', 'error');
+                    }
+                },
+                async addTask() {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        const newTask = {
+                            id: this.newTask.id || Date.now(),
+                            title: this.newTask.title,
+                            description: this.newTask.description,
+                            dueDate: this.newTask.dueDate,
+                            priority: this.newTask.priority,
+                            completed: false
+                        };
+                        if (this.newTask.id) {
+                            // Update existing task
+                            const index = this.tasks.findIndex(t => t.id === this.newTask.id);
+                            this.tasks.splice(index, 1, newTask);
+                            this.addNotification('Task updated successfully!', 'success');
+                        } else {
+                            // Add new task
+                            this.tasks.push(newTask);
+                            this.addNotification('Task added successfully!', 'success');
+                        }
+                        this.newTask = { title: '', description: '', dueDate: '', priority: 'medium' };
+                        this.showAddTaskModal = false;
+                    } catch (error) {
+                        this.addNotification('Failed to save task. Please try again.', 'error');
+                    }
+                },
+                async joinProject(project) {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        project.members.push({
+                            id: this.user.id,
+                            name: this.user.name,
+                            avatar: this.user.avatar
+                        });
+                        this.addNotification(`You've joined the project: ${project.name}`, 'success');
+                    } catch (error) {
+                        this.addNotification('Failed to join project. Please try again.', 'error');
+                    }
+                },
+                async attendEvent(event) {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        event.attendees += 1;
+                        this.addNotification(`You're attending: ${event.name}`, 'success');
+                    } catch (error) {
+                        this.addNotification('Failed to attend event. Please try again.', 'error');
+                    }
+                },
+                initializeSkillWeb() {
+                    const svg = d3.select("#skill-graph")
+                        .append("svg")
+                        .attr("width", "100%")
+                        .attr("height", "100%");
+
+                    const simulation = d3.forceSimulation(this.user.skills.map(skill => ({id: skill})))
+                        .force("charge", d3.forceManyBody().strength(-50))
+                        .force("center", d3.forceCenter(svg.node().width.baseVal.value / 2, svg.node().height.baseVal.value / 2))
+                        .force("collision", d3.forceCollide().radius(30));
+
+                    const nodes = svg.selectAll("g")
+                        .data(this.user.skills)
+                        .enter()
+                        .append("g")
+                        .attr("transform", d => `translate(${Math.random() * 300},${Math.random() * 300})`);
+
+                    nodes.append("circle")
+                        .attr("r", 20)
+                        .style("fill", "#3498db");
+
+                    nodes.append("text")
+                        .attr("dy", ".35em")
+                        .attr("text-anchor", "middle")
+                        .text(d => d)
+                        .style("fill", "white");
+
+                    simulation.on("tick", () => {
+                        nodes.attr("transform", d => `translate(${d.x},${d.y})`);
+                    });
+
+                    this.skillGraph = { svg, simulation, nodes };
+                },
+                addSkill() {
+                    const newSkill = prompt("Enter a new skill:");
+                    if (newSkill && !this.user.skills.includes(newSkill)) {
+                        this.user.skills.push(newSkill);
+                        this.updateSkillWeb();
+                    }
+                },
+                updateSkillWeb() {
+                    if (this.skillGraph) {
+                        const { svg, simulation, nodes } = this.skillGraph;
+
+                        // Update nodes
+                        const updatedNodes = svg.selectAll("g")
+                            .data(this.user.skills, d => d);
+
+                        // Remove old nodes
+                        updatedNodes.exit().remove();
+
+                        // Add new nodes
+                        const newNodes = updatedNodes.enter()
+                            .append("g")
+                            .attr("transform", d => `translate(${Math.random() * 300},${Math.random() * 300})`);
+
+                        newNodes.append("circle")
+                            .attr("r", 20)
+                            .style("fill", "#3498db");
+
+                        newNodes.append("text")
+                            .attr("dy", ".35em")
+                            .attr("text-anchor", "middle")
+                            .text(d => d)
+                            .style("fill", "white");
+
+                        // Merge new and existing nodes
+                        this.skillGraph.nodes = updatedNodes.merge(newNodes);
+
+                        // Update simulation
+                        simulation.nodes(this.user.skills.map(skill => ({id: skill})))
+                            .alpha(1)
+                            .restart();
+                    }
+                },
+                addNotification(message, type = 'info') {
+                    this.notifications.push({ id: Date.now(), message, type });
+                    setTimeout(() => {
+                        this.notifications = this.notifications.filter(n => n.id !== id);
+                    }, 5000);
+                },
+                async editProfile() {
+                    this.editProfileForm = { ...this.user };
+                    this.showEditProfileModal = true;
+                },
+                async saveProfile() {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        this.user = { ...this.editProfileForm };
+                        this.showEditProfileModal = false;
+                        this.addNotification('Profile updated successfully!', 'success');
+                    } catch (error) {
+                        this.addNotification('Failed to update profile. Please try again.', 'error');
+                    }
+                },
+                async fetchPosts() {
+                    this.loading = true;
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        this.posts = [
+                            {
+                                id: 1,
+                                author: { name: 'SRIDHAR', avatar: 'image.png' },
+                                content: 'Just finished a great AR project!',
+                                timestamp: '2 hours ago',
+                                likes: 15,
+                                comments: 3
+                            },
+                            // Add more sample posts...
+                        ];
+                        this.loading = false;
+                    } catch (error) {
+                        this.addNotification('Failed to fetch posts. Please try again.', 'error');
+                        this.loading = false;
+                    }
+                },
+                async fetchReels() {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        this.reels = [
+                            {
+                                id: 1,
+                                author: { name: 'SRIDHAR', avatar: 'image.png' },
+                                videoUrl: 'Recording 2024-07-25 213510.mp4',
+                                likes: 100,
+                                views: 500
+                            },
+                            // Add more sample reels...
+                        ];
+                    } catch (error) {
+                        this.addNotification('Failed to fetch reels. Please try again.', 'error');
+                    }
+                },
+                async fetchMarketplaceItems() {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        this.marketplaceItems = [
+                            {
+                                id: 1,
+                                name: '3D Model Pack',
+                                description: 'High-quality 3D models for AR projects',
+                                price: 49.99,
+                                image: '_d4e0ca57-b8b4-44cf-9933-e38e71024f39.jpg',
+                                category: '3D Models'
+                            },
+                            // Add more sample marketplace items...
+                        ];
+                    } catch (error) {
+                        this.addNotification('Failed to fetch marketplace items. Please try again.', 'error');
+                    }
+                },
+                async fetchTasks() {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        this.tasks = [
+                            {
+                                id: 1,
+                                title: 'Complete AR tutorial',
+                                description: 'Finish the introductory AR development tutorial',
+                                dueDate: '2024-08-15',
+                                priority: 'high',
+                                completed: false
+                            },
+                            // Add more sample tasks...
+                        ];
+                    } catch (error) {
+                        this.addNotification('Failed to fetch tasks. Please try again.', 'error');
+                    }
+                },
+                async fetchProjects() {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        this.projects = [
+                            {
+                                id: 1,
+                                name: 'AR City Guide',
+                                description: 'Develop an AR app for exploring cities',
+                                members: [
+                                    { id: 1, name: 'Alice', avatar: 'happy-smiling-young-man-avatar-3d-portrait-of-a-man-cartoon-character-people-illustration-isolated-on-white-background-vector.jpg' },
+                                    { id: 2, name: 'Bob', avatar: '1000_F_592209262_dQX4S2eCqN4irJR5s9SHkZ83HGLrGxOd.jpg' }
+                                ],
+                                dueDate: 'September 30, 2024',
+                                progress: 35
+                            },
+                            // Add more sample projects...
+                        ];
+                    } catch (error) {
+                        this.addNotification('Failed to fetch projects. Please try again.', 'error');
+                    }
+                },
+                async fetchEvents() {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        this.events = [
+                            {
+                                id: 1,
+                                name: 'AR Developers Meetup',
+                                description: 'Monthly meetup for AR enthusiasts and developers',
+                                date: 'August 15, 2024',
+                                attendees: 50,
+                                image: '_4b00d05f-818f-4b15-ae19-c5aeb452310a.jpeg',
+                                location: 'Virtual'
+                            },
+                            // Add more sample events...
+                        ];
+                    } catch (error) {
+                        this.addNotification('Failed to fetch events. Please try again.', 'error');
+                    }
+                },
+                likePost(post) {
+                    post.likes += 1;
+                    // In a real application, you would make an API call here to update the like count
+                },
+                commentOnPost(post) {
+                    const comment = prompt('Enter your comment:');
+                    if (comment) {
+                        post.comments += 1;
+                        // In a real application, you would make an API call here to add the comment
+                        this.addNotification('Comment added successfully!', 'success');
+                    }
+                },
+                sharePost(post) {
+                    // Implement share functionality
+                    alert(`Sharing post: ${post.content}`);
+                    // In a real application, you would open a share dialog or implement the sharing logic
+                },
+                filterMarketplaceItems(category) {
+                    // Implement filtering logic for marketplace items
+                    if (category === 'all') {
+                        return this.marketplaceItems;
+                    } else {
+                        return this.marketplaceItems.filter(item => item.category === category);
+                    }
+                },
+                checkout() {
+                    // Implement checkout process
+                    if (this.cart.length > 0) {
+                        const total = this.cart.reduce((sum, item) => sum + item.price, 0);
+                        alert(`Checkout total: $${total.toFixed(2)}`);
+                        // In a real application, you would integrate with a payment gateway here
+                        this.cart = [];
+                        this.addNotification('Checkout completed successfully!', 'success');
+                    } else {
+                        this.addNotification('Your cart is empty!', 'info');
+                    }
+                },
+                createProject() {
+                    // Implement project creation logic
+                    const projectName = prompt('Enter project name:');
+                    if (projectName) {
+                        const newProject = {
+                            id: Date.now(),
+                            name: projectName,
+                            description: 'New project description',
+                            members: [{ id: this.user.id, name: this.user.name, avatar: this.user.avatar }],
+                            dueDate: 'Not set',
+                            progress: 0
+                        };
+                        this.projects.push(newProject);
+                        this.addNotification('New project created!', 'success');
+                    }
+                },
+                createEvent() {
+                    // Implement event creation logic
+                    const eventName = prompt('Enter event name:');
+                    if (eventName) {
+                        const newEvent = {
+                            id: Date.now(),
+                            name: eventName,
+                            description: 'New event description',
+                            date: 'Not set',
+                            attendees: 0,
+                            image: 'https://via.placeholder.com/300',
+                            location: 'To be announced'
+                        };
+                        this.events.push(newEvent);
+                        this.addNotification('New event created!', 'success');
+                    }
+                },
+                async fetchUserData() {
+                    try {
+                        // Simulating API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        // In a real application, you would fetch user data from the server
+                        this.user = {
+                            id: 1,
+                            name: 'SRIDHAR',
+                            avatar: 'image.png',
+                            bio: 'Passionate developer and LifeLoop enthusiast',
+                            skills: ['JavaScript', 'Vue.js', 'Node.js', 'AR Development'],
+                            interests: ['Web Development', 'AI', 'Blockchain', 'Augmented Reality'],
+                            recentActivity: [
+                                { id: 1, icon: 'fas fa-code', description: 'Completed a new AR project', timestamp: '2 hours ago' },
+                                { id: 2, icon: 'fas fa-book', description: 'Learned WebXR basics', timestamp: '1 day ago' },
+                                { id: 3, icon: 'fas fa-users', description: 'Joined AR Developers group', timestamp: '3 days ago' },
+                            ],
+                        };
+                    } catch (error) {
+                        this.addNotification('Failed to fetch user data. Please try again.', 'error');
+                    }
+                },
+            },
+            computed: {
+                sortedTasks() {
+                    return [...this.tasks].sort((a, b) => {
+                        if (a.completed === b.completed) {
+                            return new Date(a.dueDate) - new Date(b.dueDate);
+                        }
+                        return a.completed ? 1 : -1;
+                    });
+                },
+                cartTotal() {
+                    return this.cart.reduce((total, item) => total + item.price, 0).toFixed(2);
+                },
+                upcomingEvents() {
+                    const now = new Date();
+                    return this.events.filter(event => new Date(event.date) > now);
+                }
+            },
+            watch: {
+                posts(newPosts) {
+                    // You could implement real-time updates or notifications here
+                    console.log('Posts updated:', newPosts.length);
+                }
+            },
+            mounted() {
+                this.fetchUserData();
+                this.fetchPosts();
+                this.fetchReels();
+                this.fetchMarketplaceItems();
+                this.fetchTasks();
+                this.fetchProjects();
+                this.fetchEvents();
+                
+                this.initializeSkillWeb();
+
+                // Set up real-time updates (in a real application, this would use WebSockets or similar)
+                setInterval(() => {
+                    // Simulate receiving new posts
+                    if (Math.random() > 0.7) {
+                        this.posts.unshift({
+                            id: Date.now(),
+                            author: { name: 'Random User', avatar: 'happy-smiling-young-man-avatar-3d-portrait-of-a-man-cartoon-character-people-illustration-isolated-on-white-background-vector.jpg' },
+                            content: 'Hii Connections',
+                            timestamp: 'Just now',
+                            likes: 0,
+                            comments: 0
+                        });
+                    }
+                }, 30000); // Check for updates every 30 seconds
+            }
+        });
+
+        app.mount('#app');
+    </script>
+</body>
+</html>
